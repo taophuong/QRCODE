@@ -17,12 +17,11 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({ onQRCodeCreate
     if (!name.trim() || !targetUrl.trim()) return;
 
     setIsGenerating(true);
-    
+
     try {
       const qrCodeId = Date.now().toString();
-      const trackingUrl = `${window.location.origin}/track/${qrCodeId}`;
-      
-      const qrCodeDataUrl = await QRCode.toDataURL(trackingUrl, {
+
+      const qrCodeDataUrl = await QRCode.toDataURL(targetUrl, {
         width: 256,
         margin: 2,
         color: {
@@ -35,7 +34,7 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({ onQRCodeCreate
         id: qrCodeId,
         name: name.trim(),
         targetUrl: targetUrl.trim(),
-        trackingUrl,
+        trackingUrl: targetUrl.trim(),
         createdAt: new Date(),
         totalScans: 0,
         scans: []
@@ -43,7 +42,7 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({ onQRCodeCreate
 
       setQrDataUrl(qrCodeDataUrl);
       onQRCodeCreated(newQRCode);
-      
+
       // Reset form
       setName('');
       setTargetUrl('');
@@ -56,7 +55,7 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({ onQRCodeCreate
 
   const downloadQRCode = () => {
     if (!qrDataUrl) return;
-    
+
     const link = document.createElement('a');
     link.download = `qr-code-${name || 'download'}.png`;
     link.href = qrDataUrl;
@@ -65,7 +64,7 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({ onQRCodeCreate
 
   const copyTrackingUrl = () => {
     if (!qrDataUrl) return;
-    
+
     const qrCodeId = Date.now().toString();
     const trackingUrl = `${window.location.origin}/track/${qrCodeId}`;
     navigator.clipboard.writeText(trackingUrl);
